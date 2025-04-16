@@ -2,6 +2,7 @@ import React from 'react';
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/context/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,8 +10,17 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const { isLoading } = useAuth();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
   const isMobile = useIsMobile();
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-lg">Carregando...</div>
+      </div>
+    );
+  }
   
   if (isAuthPage) {
     return (

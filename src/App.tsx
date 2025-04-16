@@ -49,25 +49,33 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const AppRoutes = () => (
-  <Routes>
-    <Route path={APP_CONFIG.ROUTES.HOME} element={<Navigate to={APP_CONFIG.ROUTES.DASHBOARD} replace />} />
-    
-    {/* Rotas de autenticação */}
-    <Route path={APP_CONFIG.ROUTES.LOGIN} element={<AuthRoute><Login /></AuthRoute>} />
-    <Route path={APP_CONFIG.ROUTES.SIGNUP} element={<AuthRoute><SignUp /></AuthRoute>} />
-    
-    {/* Rotas protegidas */}
-    <Route path={APP_CONFIG.ROUTES.DASHBOARD} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-    <Route path={APP_CONFIG.ROUTES.ROOMS} element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
-    <Route path={APP_CONFIG.ROUTES.ROOM_DETAILS} element={<ProtectedRoute><RoomDetails /></ProtectedRoute>} />
-    <Route path={APP_CONFIG.ROUTES.BOOKINGS} element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
-    <Route path={APP_CONFIG.ROUTES.NEW_BOOKING} element={<ProtectedRoute><NewBooking /></ProtectedRoute>} />
-    
-    {/* Rota 404 */}
-    <Route path="*" element={<NotFound />} />
-  </Routes>
-);
+const AppRoutes = () => {
+  const { isAuthenticated } = useAuth();
+  
+  return (
+    <Routes>
+      <Route path={APP_CONFIG.ROUTES.HOME} element={
+        isAuthenticated 
+          ? <Navigate to={APP_CONFIG.ROUTES.DASHBOARD} replace />
+          : <Navigate to={APP_CONFIG.ROUTES.LOGIN} replace />
+      } />
+      
+      {/* Rotas de autenticação */}
+      <Route path={APP_CONFIG.ROUTES.LOGIN} element={<AuthRoute><Login /></AuthRoute>} />
+      <Route path={APP_CONFIG.ROUTES.SIGNUP} element={<AuthRoute><SignUp /></AuthRoute>} />
+      
+      {/* Rotas protegidas */}
+      <Route path={APP_CONFIG.ROUTES.DASHBOARD} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path={APP_CONFIG.ROUTES.ROOMS} element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
+      <Route path={APP_CONFIG.ROUTES.ROOM_DETAILS} element={<ProtectedRoute><RoomDetails /></ProtectedRoute>} />
+      <Route path={APP_CONFIG.ROUTES.BOOKINGS} element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
+      <Route path={APP_CONFIG.ROUTES.NEW_BOOKING} element={<ProtectedRoute><NewBooking /></ProtectedRoute>} />
+      
+      {/* Rota 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
